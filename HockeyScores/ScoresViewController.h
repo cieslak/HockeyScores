@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MasterViewController : UITableViewController
+@interface ScoresViewController : UITableViewController
+
+- (IBAction)refresh:(id)sender;
 
 @end
