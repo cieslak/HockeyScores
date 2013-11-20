@@ -7,11 +7,11 @@
 //
 
 #import "ScoresViewController.h"
-
 #import "DetailViewController.h"
+#import "Game.h"
 
 @interface ScoresViewController () {
-    NSDictionary *_scores;
+    NSMutableArray *_games;
 }
 @end
 
@@ -36,8 +36,17 @@
 	[manager GET:request
 	  parameters:nil
 		 success:^(AFHTTPRequestOperation *operation, id responseObject) {
-			 _scores = (NSDictionary *)responseObject;
-			 NSLog(@"%@", _scores);
+			 NSDictionary *response = (NSDictionary *)responseObject;
+             NSArray *gameScores = [response objectForKey:@"scores"];
+             
+             _games = [[NSMutableArray alloc] initWithCapacity:15];
+             
+             for (id gameData in gameScores) {
+                 Game *game = [[Game alloc] initWithGameData:gameData];
+                 if (game) {
+                     [_games addObject:game];
+                 }
+             }
 			 [self.tableView reloadData];
 		 }
 		 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -65,32 +74,31 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [[_scores objectForKey:@"scores"] count];
+	return [_games count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"ScoreCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    NSArray *scores = [_scores objectForKey:@"scores"];
-	NSDictionary *scoreForCell = [scores objectAtIndex:indexPath.row];
-	
-	UILabel *awayName = (UILabel *)[cell viewWithTag:1];
-	awayName.text = [scoreForCell objectForKey:@"awayTeamName"];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                        forIndexPath:indexPath];
+
+    Game *game = [_games objectAtIndex:indexPath.row];
+        
+    UILabel *awayName = (UILabel *)[cell viewWithTag:1];
+	awayName.text = game.awayTeamName;
 	
 	UILabel *awayScore = (UILabel *)[cell viewWithTag:2];
-	awayScore.text = [scoreForCell objectForKey:@"awayScore"];
+	awayScore.text = game.awayScore;
 	
 	UILabel *homeName = (UILabel *)[cell viewWithTag:3];
-	homeName.text = [scoreForCell objectForKey:@"homeTeamName"];
+	homeName.text = game.homeTeamName;
 	
 	UILabel *homeScore = (UILabel *)[cell viewWithTag:4];
-	homeScore.text = [scoreForCell objectForKey:@"homeScore"];
+	homeScore.text = game.homeScore;
 	
 	UILabel *period = (UILabel *)[cell viewWithTag:5];
-	period.text = [scoreForCell objectForKey:@"period"];
-	
+	period.text = game.period;
     
     return cell;
 }
