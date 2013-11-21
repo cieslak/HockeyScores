@@ -26,7 +26,21 @@
             self.homeTeamCity = [gameData objectForKey:@"homeTeamCity"];
             self.homeTeamName = [gameData objectForKey:@"homeTeamName"];
             self.isPlaying = (BOOL)[gameData objectForKey:@"isPlaying"];
-            self.period = [gameData objectForKey:@"period"];
+			
+			NSDateFormatter *estTimeFormat = [[NSDateFormatter alloc] init];
+			[estTimeFormat setTimeZone:[NSTimeZone timeZoneWithName:@"EST"]];
+			[estTimeFormat setDateFormat:@"hh:mm a"];
+			NSDate *estTime = [estTimeFormat dateFromString:[gameData objectForKey:@"period"]];
+			
+			if (estTime) {
+				NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
+				[localTimeFormat setTimeZone:[NSTimeZone systemTimeZone]];
+				[localTimeFormat setDateFormat:@"hh:mm a"];
+				self.period = [localTimeFormat stringFromDate:estTime];
+			} else {
+				self.period = [gameData objectForKey:@"period"];
+			}
+			
             self.shortAwayTeam = [gameData objectForKey:@"shortAwayTeam"];
             self.shortHomeTeam = [gameData objectForKey:@"shortHomeTeam"];
             
