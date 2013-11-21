@@ -29,13 +29,14 @@
 			
 			NSDateFormatter *estTimeFormat = [[NSDateFormatter alloc] init];
 			[estTimeFormat setTimeZone:[NSTimeZone timeZoneWithName:@"EST"]];
-			[estTimeFormat setDateFormat:@"hh:mm a"];
+			[estTimeFormat setDateFormat:@"h:mm a"];
 			NSDate *estTime = [estTimeFormat dateFromString:[gameData objectForKey:@"period"]];
-			
+            
 			if (estTime) {
 				NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
-				[localTimeFormat setTimeZone:[NSTimeZone systemTimeZone]];
-				[localTimeFormat setDateFormat:@"hh:mm a"];
+				[localTimeFormat setTimeStyle:NSDateFormatterShortStyle];
+                [localTimeFormat setTimeZone:[NSTimeZone systemTimeZone]];
+                [localTimeFormat setLocale:[NSLocale currentLocale]];
 				self.period = [localTimeFormat stringFromDate:estTime];
 			} else {
 				self.period = [gameData objectForKey:@"period"];
