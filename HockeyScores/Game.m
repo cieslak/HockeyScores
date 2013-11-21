@@ -36,7 +36,6 @@
 				NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
 				[localTimeFormat setTimeStyle:NSDateFormatterShortStyle];
                 [localTimeFormat setTimeZone:[NSTimeZone systemTimeZone]];
-                [localTimeFormat setLocale:[NSLocale currentLocale]];
 				self.period = [localTimeFormat stringFromDate:estTime];
 			} else {
 				self.period = [gameData objectForKey:@"period"];
